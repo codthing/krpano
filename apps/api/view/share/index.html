@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>krpano</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <link rel="stylesheet" type="text/css" href="__CSS__/style.css" />
+    <script type="text/javascript" src="__JS__/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="__JS__/mobile.js"></script>
+    <script type="text/javascript" src="__JS__/music.js"></script>
+    <script type="text/javascript" src="__LAYUI__/layui.all.js"></script>
+
+    <style>
+        @-ms-viewport { width:device-width; }
+        @media only screen and (min-device-width:800px) { html { overflow:hidden; } }
+        html { height:100%; }
+        body { height:100%; overflow:hidden; background-color:#eee;color:#fff; position: relative;}
+        .pano_name{position: absolute;z-index: 2;}
+        .gongju{position: absolute;right:.2rem;top:.2rem;z-index: 2;}
+        .gj_btn{
+            width: .5rem;
+            height: .5rem;
+            background: rgba(0,0,0,0.4);
+            border-radius: 0.5rem;
+            display: flex;align-items: center;justify-content: center;font-size: .2rem;
+        }
+        .gj_btn img{width: .3rem;height: .3rem;}
+        .guige{position: absolute;left: 0;bottom: 0;padding-bottom: .2rem;padding-left:.2rem;z-index: 2;}
+        #pano{position: relative;z-index: 1;}
+        .guige_list{display: flex;align-items: center;margin-bottom:0.22rem;}
+        .guige_list li{
+            width: .8rem;
+            height: .8rem;
+            box-sizing: border-box;
+            border-radius: 0.1rem;
+            overflow:hidden;
+            margin-right: 0.2rem;
+        }
+        .guige_list li span{
+            width: .8rem;
+            height: .8rem;
+            display: flex;
+            align-items: center;justify-content: center;
+            font-size: .22rem;
+            border-radius: 0.1rem;
+        }
+        .guige_list li.on{
+            border: solid 0.02rem #5ef6e8;
+        }
+        .guige_list li.on span{
+            background-color:rgba(0,0,0,0.4);
+        }
+        .guige_list{
+            padding:0.2rem .22rem;
+            background-color:rgba(0,0,0,0.4);
+
+        }
+        .guigeBox{
+            position: absolute;left: 0;bottom:1.2rem;z-index: 2;
+            width: 100%;
+            overflow:scroll;
+        }
+        .krpano_count{
+            position: absolute;right:.2rem;bottom:.2rem;z-index: 2;
+            text-align: center;
+        }
+        .share_pop{
+            position: fixed;left:0;top:0;width: 100%;height: 100vh;background:rgba(0,0,0,0.4);z-index: 3;
+        }
+        .share_img{padding:0.2rem; display: flex; justify-content: flex-end;}
+        .share_img img{margin-right: 0.8rem;height:2rem;}
+    </style>
+    <script>
+        $(function () {
+            window['adaptive'].desinWidth = 750;
+            window['adaptive'].baseFont = 28;
+            window['adaptive'].maxWidth = 750;
+            window['adaptive'].init();
+            //console.log(window.screen.availWidth);
+            $.fn.autoHeight = function(){
+                function autoHeight(elem){
+                    elem.style.height = 'auto';
+                    elem.scrollTop = 0; //防抖动
+                    elem.style.height = elem.scrollHeight + 'px';
+                }
+                this.each(function(){
+                    autoHeight(this);
+                    $(this).on('keyup', function(){
+                        autoHeight(this);
+                    });
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+<audio loop="true" id="music1" autoplay="autoplay" src="{$details.mp3_path}"></audio>
+<div class="pl20 pt20 pano_name">设计作者：门展绘<br/><img class="mt20" src="{$details.watermark_path}"/></div>
+
+<ul class="gongju">
+    <li id="palyM">
+        <div class="gj_btn"><img src="__IMAGES__/music.png"></div>
+        <div>音乐</div>
+    </li>
+    <li class="mt20" onclick="$('.share_pop').show();">
+        <div class="gj_btn"><img src="__IMAGES__/share.png"></div>
+        <div>分享</div>
+    </li>
+</ul>
+<div class="guigeBox" style="display: none;">
+  <!--  <ul id="gglist_1" class="guige_list gglist2" style="display: none;">
+        <li style="background:url(__IMAGES__/材质.png) center no-repeat;background-size:cover; "></li>
+        <li style="background:url(__IMAGES__/风格.png) center no-repeat;background-size:cover; "></li>
+    </ul>-->
+   <!-- <ul id="gglist_2" class="guige_list gglist2" style="display: none;">
+        <li style="background:url(__IMAGES__/图层2@2x.png) center no-repeat;background-size:cover; "></li>
+        <li style="background:url(__IMAGES__/图层2@2x.png) center no-repeat;background-size:cover; "></li>
+    </ul>-->
+
+    <ul id="gglist" class="guige_list gglist2" style="display: none;">
+        <!--<li style="background:url(__IMAGES__/图层2@2x.png) center no-repeat;background-size:cover; "></li>
+        <li onclick="sw(details_id)" style="background:url(__IMAGES__/图层2@2x.png) center no-repeat;background-size:cover; "></li>-->
+    </ul>
+
+    <ul class="guige_list gglist1">
+        {volist name="category" id="vo"}
+        <li style="background:url({$vo['icon_path']}) center no-repeat;background-size:cover;" onclick="openGG(this,{$vo['id']},{$list['id']})"><span>{$vo['title']}</span></li>
+        {/volist}
+       <!-- <li style="background:url(__IMAGES__/材质.png) center no-repeat;background-size:cover;" onclick="openGG(this,1)"><span>材质</span></li>
+        <li style="background:url(__IMAGES__/风格.png) center no-repeat;background-size:cover;" onclick="openGG(this,2)"><span>风格</span></li>-->
+    </ul>
+</div>
+<div class="guige f20">
+    <div class="btn"><div class="gj_btn"><img src="__IMAGES__/guige.png"></div>
+        <div>规格</div></div>
+</div>
+<div class="krpano_count f20">
+    <div>{$list.share}</div>
+    <div>浏览量</div>
+</div>
+
+<div class="share_pop" onclick="$('.share_pop').hide();" style="display: none;">
+    <div class="share_img"><img src="__IMAGES__/share_pop.png" /></div>
+    <div class="t-c">点击这里分享给好友</div>
+</div>
+
+
+<script src="{$js}"></script>
+<div id="pano" style="width:100%;height:100%;">
+    <noscript><table style="width:100%;height:100%;"><tr style="vertical-align:middle;"><td><div style="text-align:center;">ERROR:<br/><br/>Javascript not activated<br/><br/></div></td></tr></table></noscript>
+    <script>
+        embedpano({xml:"{$xml_path}", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:true});
+    </script>
+</div>
+<script type="text/javascript">
+    //请求图片标注
+    $(function () {
+        var details_id="{$details.id}"
+
+        $.post('/api/share/standard',{id:details_id},function (data) {
+            console.dir(data);
+        })
+
+
+    })
+
+
+
+    var audio;
+    $(function(){
+        audio = document.getElementById('music1');
+        $(audio).on('canplay', function() {
+            console.log(audio.autoplay);
+            // if(audio.autoplay)
+        })
+
+    })
+    var ishow = false;
+    $(".guige").click(function(){
+        if(ishow){
+            $(".guigeBox").hide();
+            ishow = false;
+        }else{
+            $(".guigeBox").show();
+            ishow = true;
+        }
+    })
+    $("#palyM").click(function(){
+        if($(this).data('play')=="false"){
+            $(this).data('play',"true");
+            audio.play();
+            $("#palyM img").attr("src",'__IMAGES__/music.png');
+        }else{
+            audio.pause();
+            $(this).data('play',"false");
+            $("#palyM img").attr("src",'__IMAGES__/music_none.png');
+        }
+    })
+   /* function openGG(e,type){
+        $(".gglist1 li").removeClass("on");
+        $(e).addClass("on");
+        $(".gglist2").hide();
+        $("#gglist_"+type).show();
+    }*/
+    function openGG(e,type,plotting_id){
+        $(".gglist1 li").removeClass("on");
+        $(e).addClass("on");
+        $.post("/api/share/plotting",{category_id:type,plotting_id:plotting_id},function (data) {
+            if (data.code ==200){
+                //console.dir(data.data);
+                var html='';
+                $.each(data.data,function (index,value) {
+                    html +=' <li onclick="sw('+value.id+','+plotting_id+')" style="background:url('+value.icon_path+') center no-repeat;background-size:cover; "></li>';
+                })
+                $("#gglist").html(html);
+                $("#gglist").show();
+            }else {
+                $("#gglist").hide();
+                layer.msg('未获取到数据');
+            }
+        })
+        //$(".gglist2").hide();
+       // $("#gglist_"+type).show();
+    }
+
+    function sw(details_id,plotting_id) {
+        location.href="/api/share/index?details_id="+details_id+"&plotting_id="+plotting_id;
+    }
+
+
+
+</script>
+</body>
+</html>

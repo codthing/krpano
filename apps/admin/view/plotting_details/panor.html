@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>门展会后台管理</title>
+    <link type="text/css" rel="stylesheet" href="/static/assets/css/bootstrap.min.css"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/assets/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/AdminLTE.min.css" /><link rel="stylesheet" type="text/css" href="/static/admin/css/_all-skins.min.css" /><link rel="stylesheet" type="text/css" href="/static/assets/css/base.css" /><link rel="stylesheet" type="text/css" href="/static/libs/iCheck/all.css" /><link rel="stylesheet" type="text/css" href="/static/libs/toastr/toastr.min.css" />
+    <link type="text/css" href="/static/admin/css/style.css?v=1.3.1" rel="stylesheet" >
+    <script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+    <!-- <script type="text/javascript" src="/static/assets/js/jquery-3.2.1.min.js"></script> -->
+    <script type="text/javascript">
+        var EacooPHP = window.EacooPHP = {
+            "eacoophp_version":"1.3.1",
+            "url_model":1,//1重写模式，2兼容模式
+            "root":'',
+            "root_domain": "http://{$http_host}/admin.php", //当前网站地址
+            "static": "/static", //静态资源地址
+            "public": "/static/assets", //项目公共目录地址
+            "uploads_url" :'/uploads/',
+            "upload_driver":"local",
+            "cdn_domain":"http://{$http_host}",
+            "eacoo_api_url":"https://www.eacoophp.com",
+        }
+    </script>
+    <style>
+        #shangchuan div:nth-child(2){width:100%!important;height:100%!important;}
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+
+
+<body class="hold-transition skin-blue" style="background-color:#ecf0f5;">
+<div class="iframe-wrapper">
+    <section class="content-header">
+        <!-- 面包屑导航 -->
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> <a href="/admin.php/admin/dashboard/index.html" class="opentab" tab-title='首页' data-iframe="true" tab-name="navtab-collapse-1">首页</a></a></li>
+            <li class="active">编辑全景图 <span class="color-warning eacoo-menu-collect" data-title="编辑全景图" data-url="/admin.php/admin/plotting_details/edit/id/2.html" title="标记为收藏" style="cursor: pointer;font-size: 13px;"> <i class="fa fa-star-o"></i></span></li>
+            <div class="pull-right mr-10" style="margin-top: -10px;">
+                <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>
+            </div>
+        </ol>
+    </section>
+    <!--内容-->
+    <style>
+	#pano{width:600px;height:600px;}.pano_options{margin-left:30px;}
+	b{font-weight:bold;}
+	.hot_list{margin-top:10px;display:flex;flex-wrap: wrap;width:410px;}
+	.hot_list li{width:70px;height:70px;border:1px solid #eee;cursor:pointer;margin-right:10px;margin-bottom:10px;display: flex;align-items: center;justify-content: center;}
+	.hot_list li img{max-width:70px;height:auto;max-height:70px;}
+	.baocun{background-color:#3c8dbc;height:45px;width:120px;line-height:45px;text-align:center;color:#FFF;}
+	.clear{background-color:#3c8dbc;height:45px;width:120px;line-height:45px;text-align:center;color:#FFF;margin-left:20px;}
+	.hot_list li.on{border:1px solid #3c8dbc;}
+	.hot_type{height: 40px;width: 170px;}
+	.pano_list{margin-top:10px;display:flex;flex-wrap: wrap;width:400px;}
+	.pano_list li{border:1px solid #FFF;cursor:pointer;margin-right: 10px;}
+	.pano_list li:hover,.pano_list li.on{border:1px solid #3c8dbc;}
+	.pano_list li img {max-width: 100px;height: auto;max-height: 100px;}
+	.img_box{width: 100px;height: 100px;display: flex;align-items: center;justify-content: center;}
+	.pano_name{text-align: center;}
+	.pano_text{margin-top:10px;width:400px;}
+	.hot_input{height: 40px;width: 170px;font-size: 12px;border:1px solid #ccc;padding-left:10px;line-height: 40px;}
+	.hot_textarea{margin-top:25px;width: 300px;padding-top:10px;padding-left: 10px;display: block;height: 300px;}
+	.upload-img-box{margin-left:0}
+	</style>
+    <section class="content ">
+        <script src="{$js}"></script>
+        <div style="background: #fff!important;border-radius:3px;padding:10px;display:flex;">
+            <div id="pano">
+                <noscript><table style="width:100%;height:100%;"><tr style="vertical-align:middle;"><td><div style="text-align:center;">ERROR:<br/><br/>Javascript not activated<br/><br/></div></td></tr></table></noscript>
+            </div>
+			<div class="pano_options">
+				<div id="xzrd"></div>
+				<div class="b f18">选择热点:</div>
+				<ul class="hot_list">
+					<li class="" data-url="/static/admin2/images/leftjiantou.png" data-w="70px"   data-h="70px"><img src="/static/admin2/images/leftjiantou.png" /></li>
+					<li class="" data-url="/static/admin2/images/frontjiantou.png"  data-w="70px"  data-h="70px"><img src="/static/admin2/images/frontjiantou.png" /></li>
+					<li class="" data-url="/static/admin2/images/xq.png"  data-w="40px" data-h="40px"><img src="/static/admin2/images/xq.png" /></li>
+				</ul>
+				<select class="hot_type">
+					<option value="0">请选择类型</option>
+					<option value="1">场景切换</option>
+					<option value="2">文字介绍</option>
+					<option value="3">图片介绍</option>
+				</select>
+
+				<ul id="pano_list" class="pano_list hot_t" style="display: none;">
+                    {volist name="list" id="vo"}
+					<li onclick="choosepano(this,{$vo.id})">
+						<div class="img_box"><img src="{$vo.icon_path}" /></div>
+						<div class="pano_name">{$vo.title}</div>
+					</li>
+                    {/volist}
+				</ul>
+
+				<div id="pano_text" class="pano_text hot_t" style="display: none;">
+					<input placeholder="请输入标题" class="hot_input" />
+					<textarea class="hot_textarea" placeholder="请输入内容"></textarea>
+				</div>
+
+
+                <input class="attach" type="hidden" id="icon" value="" />
+				<div id="pano_img" class="pano_text hot_t" style="display: none;">
+					<input placeholder="请输入标题" class="hot_input" />
+                    <div>
+                        <span class="btn btn-info ml-10 mt-10 btn-sm" id="shangchuan"><i class="fa fa-file-image-o"></i> 选择图片</span>
+                    </div>
+
+                    <div class="upload-img-box tc popup-gallery img-thumbnail pr ">
+                        <div class="each each_img">
+                            <img src="/static/assets/img/noimage.gif" id="each_img" />
+                        </div>
+                    </div>
+				</div>
+
+				<div style="margin-top:20px;display:flex;">
+					<div class="baocun btn-primary">保存</div>
+					<div class="clear btn-primary">清除</div>
+				</div>
+			</div>
+        </div>
+    </section>
+
+
+    <script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
+    <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
+    <link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
+    <script src="__LIBS__/daterangepicker/moment.min.js"></script>
+    <script src="__LIBS__/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="/static/admin/layui/layui.all.js"></script>
+	<script>
+		var krpanos = null;
+		var details_id="{$details.id}";
+		embedpano({xml:"{$xml_path}", target:"pano", html5:"auto", mobilescale:1.0, passQueryParameters:true,onready:krpano_onready_callback});
+		function krpano_onready_callback(krpano_interface)
+		{
+		  krpanos = krpano_interface;
+		  
+            $.post('/admin/plotting_details/get_standard',{id:details_id},function (res) {
+                console.log(res);
+				if(res.code == 200){
+					$.each(res.data,function(i,item){
+						GetHots(item);
+					})
+				}
+            })
+		}
+		
+		//动态添加热点
+		function GetHots(hots) {
+			console.log(krpanos);
+			if(krpanos){
+				krpanos.call("addhotspot(" + hots.spotname + ");");
+				krpanos.call("set(hotspot[" + hots.spotname + "].url,"+hots.img_url+");");
+				krpanos.call("set(hotspot[" + hots.spotname + "].ath," + hots.ath + ");");
+				krpanos.call("set(hotspot[" + hots.spotname + "].atv," + hots.atv + ");");
+				krpanos.call("set(hotspot[" + hots.spotname + "].width," + hots.img_wide + "px);");
+				krpanos.call("set(hotspot[" + hots.spotname + "].height," + hots.img_height + "px);");
+				krpanos.call("set(hotspot[" + hots.spotname + "].distorted,true);");
+			}
+		}
+		var hot = null;
+		//动态添加热点
+		function AddHotspot(imgurl,width,height) {
+			console.log(krpanos);
+			if(krpanos){
+				setTimeout(function(){
+					var spotname = "addhotspot";
+					var hlookat = 0.000;
+					var vlookat = 0.000;
+					krpanos.call("addhotspot(" + spotname + ");");
+					krpanos.call("set(hotspot[" + spotname + "].url,"+imgurl+");");
+					krpanos.call("set(hotspot[" + spotname + "].ath," + hlookat + ");");
+					krpanos.call("set(hotspot[" + spotname + "].atv," + vlookat + ");");
+					krpanos.call("set(hotspot[" + spotname + "].ondown,draghotspot(););");
+					krpanos.call("set(hotspot[" + spotname + "].width,"+width+"px);");
+                    krpanos.call("set(hotspot[" + spotname + "].height,"+height+"px);");
+                    krpanos.call("set(hotspot[" + spotname + "].distorted,false);");
+					hot = {
+						spotname:"addhotspot",
+						url:imgurl,
+						ath:hlookat,
+						atv:vlookat,
+						w:width,
+						h:height
+					}
+				},200)
+			}
+		}
+		//修改新增热点的图片
+		function UpdateHotspot(imgurl,width,height) {
+			console.log(krpanos);
+			if(krpanos){
+				setTimeout(function(){
+					krpanos.call("set(hotspot[" + hot.spotname + "].url,"+imgurl+");");
+					krpanos.call("set(hotspot[" + hot.spotname + "].width,"+width+"px);");
+                    krpanos.call("set(hotspot[" + hot.spotname + "].height,"+height+"px);");
+					hot.url = imgurl;
+					hot.w = width;
+					hot.h = height;
+				},200)
+			}
+		}
+		//选择热点图片
+		$(".hot_list li").click(function(){
+			$(".hot_list li").removeClass("on");
+			$(this).addClass("on");
+			if(hot){
+				UpdateHotspot($(this).data('url'),$(this).data('w'),$(this).data('h'));
+			}else{
+				AddHotspot($(this).data('url'),$(this).data('w'),$(this).data('h'));
+			}
+			
+		})
+		$(".baocun").click(function(){
+			if(!hot){
+				layer.msg('请选择热点');
+				return;
+			}
+            //pdetails_id 锚点跳转下一个图片的id
+            //img_wide 锚点宽
+            //img_height 锚点高
+            //pdetails_id 锚点跳转下一个场景的id,选中场景了
+            //content 锚点内容，图片或者文章
+            //title 锚点标题
+            //type :1场景 2文字 3图片
+			var details_id="{$details.id}";
+			//传给后台保存
+			var type = $(".hot_type").val();
+			if(type == 0){
+				layer.msg('请选择热点类型');
+				return;
+			}
+			if(type == 1 && panoid ==0){
+				layer.msg('请选择场景');
+				return;
+			}
+			var title = "";
+			var content = "";
+			if(type == 2){
+				title = $("#pano_text input").val();
+				content = $("#pano_text textarea").val();
+			}
+			if(type == 3){
+				title = $("#pano_img input").val();
+				content = $("#icon").val();
+			}
+			if(title == "" && type != 1){
+				layer.msg('请输入标题');
+				return;
+			}
+			if(content == "" && type != 1){
+				layer.msg('请添加内容');
+				return;
+			}
+            $.post('/admin/plotting_details/standard',{details_id:details_id,type:type,ath:hot.ath,atv:hot.atv,img_url:hot.url,pdetails_id:panoid,title:title,content:content,img_wide:hot.w,img_height:hot.h},function (data) {
+                if (data.code ==200){
+                    layer.msg('成功');
+					setTimeout(function(){
+						 location.reload();
+					},2000);
+                }else{
+                    layer.msg(data.msg);
+                }
+            })
+			// console.log(hot);
+			// var hotxml = '<hotspot name="'+hot.spotname+'" url="'+hot.url+'"  ath="'+hot.ath+'" atv="'+hot.atv+'" width="70px" height="70px;" distorted="true" visible="false"  />';
+		})
+
+		//选择
+		var panoid = 0;
+		function choosepano(e,id){
+			panoid = id;
+			$(".pano_list li").removeClass('on');
+			$(e).addClass("on");
+
+		}
+		function GetHotspot(ath, atv) {
+			hot.ath = ath; 
+			hot.atv = atv; 	
+		}
+		$(".hot_type").change(function(){
+			var val = $(this).val();
+			console.log(val);
+			$(".hot_t").fadeOut(300);
+			setTimeout(function(){
+				switch(val){
+					case "1":
+					$("#pano_list").fadeIn(300);
+					break;
+					case "2":
+					$("#pano_text").fadeIn(300);
+					break;
+					case "3":
+					$("#pano_img").fadeIn(300);
+					break;
+				}
+			},300)
+			
+		})
+		$(".clear").click(function(){
+			
+			$.post('/admin/plotting_details/standard_del',{details_id:details_id},function (res) {
+                console.log(res);
+				if(res.code == 200){
+					layer.msg('清除成功');
+					setTimeout(function(){
+						 location.reload();
+					},2000);
+				}
+            })
+		})
+
+        $(function (){
+            //上传水印
+            var uploader_attachment2 = WebUploader.create({
+                // 选完文件后，是否自动上传。
+                auto: true,
+                duplicate: true,// 同一文件是否可以重复上传
+                // swf文件路径
+                swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
+                // 文件接收服务端。
+                server: "{:url('api/Uploads/upload3d')}",
+                //验证文件总数量, 超出则不允许加入队列
+                fileNumLimit: 5,
+                // 如果此选项为false, 则图片在上传前不进行压缩
+                compress: false,
+                // 验证单个文件大小是否超出限制, 超出则不允许加入队列
+                fileSingleSizeLimit:{php}echo 300*1024*1024;{/php},
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+                //选择文件的按钮
+                pick: '#shangchuan',
+                    // 只允许选择图片文件
+                accept:{
+                 	title:'Images',
+                 	extensions:'{:config("attachment_options.image_exts")}',
+                 	mimeTypes:'image/*'
+                }
+            });
+            uploader_attachment2.on('fileQueued', function (file) {
+                uploader_attachment2.upload();
+            });
+            // 文件上传过程中创建进度条实时显示。
+            uploader_attachment2.on( 'uploadProgress', function( file, percentage ) {
+                var $li = $('.each_img'),
+                    $percent = $li.find('.progress .progress-bar');
+                // 避免重复创建
+                if ( !$percent.length ) {
+                    $percent = $('<div class="progress progress-striped active">' +
+                        '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                        '</div>' +
+                        '</div>').appendTo( $li ).find('.progress-bar');
+
+                }
+                $li.find('p.state').text('上传中');
+                $percent.css( 'width', percentage * 100 + '%' );
+            });
+
+            /*上传成功**/
+            uploader_attachment2.on('uploadSuccess', function (file, result) {
+                if (result.code==200) {
+                    $("#icon").val(result.icon);
+                    data = result.data;
+                    var append_string2='<i onclick="admin_image.removeImage($(this),'+result.icon+')" class="fa fa-times-circle remove-attachment"></i>\n' +
+                        '                                                        <a href="http://{$http_host}'+result.path+'" title="点击查看大图">\n' +
+                        '                                                            <img src="http://{$http_host}'+result.path+'">\n' +
+                        '                                                        </a>';
+                    $(".each_img").html(append_string2);
+                    uploader_attachment2.reset();
+                } else {
+                    updateAlert(result.msg);
+                    setTimeout(function () {
+                        $(this).removeClass('disabled').prop('disabled', false);
+                    }, 1500);
+                }
+            });
+        });
+
+
+
+
+	</script>
+
+
+
+
+</div>
+<script type="text/javascript" src="/static/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/jquery.cookie.js"></script>
+
+<!-- Slimscroll -->
+<script src="/static/libs/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script type="text/javascript" src="/static/libs/fastclick/fastclick.min.js"></script>
+<script type="text/javascript" src="/static/admin/js/app.min.js" ></script>
+<!-- <script  type="text/javascript" src="/static/assets/js/jquery.nestable.js"></script> -->
+<script  type="text/javascript" src="/static/libs/nice-validator/jquery.validator.min.js?local=zh-CN"></script>
+<!-- <script type="text/javascript" src="/static/assets/js/think.js"></script> -->
+<script type="text/javascript" src="/static/libs/layer/layer.js"></script>
+
+<script type="text/javascript" src="/static/libs/iCheck/icheck.min.js"></script>
+
+<script type="text/javascript" src="/static/libs/toastr/toastr.min.js"></script>
+
+<script type="text/javascript" src="/static/admin/js/common.js?v=1.3.1" ></script>
+<script type="text/javascript" src="/static/admin/js/eacoo.js?v=1.3.1" ></script>
+<script type="text/javascript" src="/static/admin/js/base.js?v=1.3.1" ></script>
+
+<script type="text/javascript">
+    (function ($) {
+
+    })(jQuery);
+</script>
+
+</body>
+</html>

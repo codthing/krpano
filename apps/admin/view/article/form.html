@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>八卦来了后台管理</title>
+    <link type="text/css" rel="stylesheet" href="/static/assets/css/bootstrap.min.css"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/assets/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/AdminLTE.min.css" /><link rel="stylesheet" type="text/css" href="/static/admin/css/_all-skins.min.css" /><link rel="stylesheet" type="text/css" href="/static/assets/css/base.css" /><link rel="stylesheet" type="text/css" href="/static/libs/iCheck/all.css" /><link rel="stylesheet" type="text/css" href="/static/libs/toastr/toastr.min.css" />
+    <link type="text/css" href="/static/admin/css/style.css?v=1.3.1" rel="stylesheet" >
+    <script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+    <script src="/static/admin/layui/layui.all.js" type="text/javascript" charset="utf-8"></script>
+    <!-- <script type="text/javascript" src="/static/assets/js/jquery-3.2.1.min.js"></script> -->
+    <script type="text/javascript">
+        var EacooPHP = window.EacooPHP = {
+            "eacoophp_version":"1.3.1",
+            "url_model":2,//1重写模式，2兼容模式
+            "root":'',
+            "root_domain": "http://{$http_host}/admin.php", //当前网站地址
+            "static": "/static", //静态资源地址
+            "public": "/static/assets", //项目公共目录地址
+            "uploads_url" :'/uploads/',
+            "upload_driver":"local",
+            "cdn_domain":"http://{$http_host}",
+            "eacoo_api_url":"https://www.eacoophp.com",
+        }
+    </script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+
+
+<body class="hold-transition skin-blue" style="background-color:#ecf0f5;">
+<div class="iframe-wrapper">
+    <section class="content-header">
+        <!-- 面包屑导航 -->
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> <a href="/admin.php?s=/admin/dashboard/index.html" class="opentab" tab-title='首页' data-iframe="true" tab-name="navtab-collapse-1">首页</a></a></li>
+            <li class="active">帖子详情 <span class="color-warning eacoo-menu-collect" data-title="帖子详情" data-url="/admin.php?s=/admin/craftsman/form/id/17.html" title="标记为收藏" style="cursor: pointer;font-size: 13px;"> <i class="fa fa-star-o"></i></span></li>
+            <div class="pull-right mr-10" style="margin-top: -10px;">
+                <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>
+            </div>
+        </ol>
+    </section>
+    <!--内容-->
+
+    <style type="text/css">
+        hr{margin-left: 20px;}
+        /* Builderform样式 */
+        .builder .form-horizontal .control-label{color: #333;}
+        label.checkbox-label{margin-bottom: 15px;}
+        .webuploader-pick{border: none!important;}
+
+        .help-block{font-size: 13px;line-height: 24px;font-weight: 500;color: #777;padding-left: 0;}
+        .help-block:hover{color: #555;}
+        .help-block i.fa{font-size: 15px;}
+
+        .citys_field{margin-bottom: 10px;}
+        .citys_field select{border-radius: 0;box-shadow: none;border-color: #d2d6de;height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.42857143;color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s}
+        /*上传个人图像*/
+        .upload-avatar-box{display: block;margin-top: 20px;width: 135px;height: 130px;line-height: 120px;}
+        .upload-avatar-box img{max-height: 120px;max-width: 125px;}
+        /*多图上传*/
+        .gallery-box-bg{background-color: #f0f0f0;padding: 10px 5px;margin-left:3%!important;}
+
+        .uploader-list .col-md-3{padding-left:5px;padding-right: 5px;}
+        .uploader-list .thumbnail{width: 100%;height: 135px;margin-bottom: 15px;}
+        .uploader-list .thumbnail img{max-width: 100%;height: 100%;}
+        /* Builderlist样式 */
+        #selectForm{display: inline;}
+        .builder-toolbar .form-group { margin-top: 0px; }
+        .icon-menu{top:33px;}
+
+        .builder_sub_title{font-size:13px;display: inline-block;border-radius:3px;color: #666;margin-top:10px;line-height: 26px;}
+        /*table*/
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{font-size: 13px;}
+    </style>
+
+    <section class="content pt-5">
+        <div class="box box-solid eacoo-box">
+            <!-- Tab导航 -->
+
+            <div class="box-body">
+                <div class="builder formbuilder-box">
+                    <div class="row">
+                        <div class="col-md-11" style="padding: 20px;margin-left:30px;border-radius:3px;">
+                            <form action="{:url('form')}" method="post" class="form-builder form-horizontal" data-validator-option="{theme:'bootstrap', timely:2, stopOnError:true}">
+                                <fieldset>
+                                    <div class="form-group item_id hide">
+                                        <label for="id" class="col-md-2 control-label">UID</label>
+                                        <div class="col-md-4" >
+                                            <input type="hidden" class="form-control" id="id" name="id" value="{$article['id']}" >                                         </div>
+                                    </div>
+
+                                    <div class="form-group item_name ">
+                                        <label for="member_id" class="col-md-2 control-label">帖子作者</label>
+                                        <div class="col-md-4">
+                                            <select name="member_id" id="member_id" class="form-control">
+                                                <option value="0">无作者</option>
+                                                {volist name="member" id="m"}
+                                                <option value="{$m['id']}" {if condition="$article['member_id'] eq $m['id']"}selected{/if}>{$m['name']}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group item_name ">
+                                        <label for="status" class="col-md-2 control-label">帖子状态</label>
+                                        <div class="col-md-4">
+                                        <select name="status" id="status" class="form-control">
+                                            <option value="1" {if condition="$article['status'] eq 1"}selected{/if}>正常</option>
+                                            <option value="0" {if condition="$article['status'] eq 0"}selected{/if}>管理员删除</option>
+                                         </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group item_age ">
+                                        <label for="age" class="col-md-2 control-label">发布日期</label>
+                                        <div class="col-md-4" >
+                                            <input type="text" class="form-control" id="create_time" name="create_time" value="{$article['create_time']|date='Y-m-d',###}" require readonly>
+                                        </div>
+                                    </div>
+
+                                    {volist name="article_details" id="vo"}
+                                        {if condition="$vo['type'] eq 1"}
+                                    <div class="form-group item_name ">
+                                        <label for="title" class="col-md-2 control-label">帖子标题</label>
+                                        <div class="col-md-4" >
+                                            <input type="text" class="form-control" name="title" value="{$vo['words']}" require>                                             </div>
+                                    </div>
+                                        {/if}
+
+                                        {if condition="$vo['type'] eq 2"}
+                                    <div class="form-group item_self_inter ">
+                                        <label for="content" class="col-md-2 control-label">内容</label>
+                                        <div class="col-md-6" >
+                                            <input type="hidden" name="content_id[]" value="{$vo['id']}">
+                                            <textarea name="content[]" class="form-control" length="120" rows='5' require>{$vo['words']}</textarea>              </div>
+                                    </div>
+                                        {/if}
+
+                                    {/volist}
+
+                                    {notempty name="icon"}
+
+                                    <div class="form-group item_icons ">
+                                        <label for="icons" class="col-md-2 control-label">帖子图片</label>
+                                        <div class="col-md-8" style="padding-bottom: 5px;padding-left: 5px;">
+
+                                            <div class="row controls">
+                                                <div class="col-md-2" style="padding-bottom: 5px;">
+                                                    <span class="btn btn-info ml-10 btn-sm" data-url="/admin.php?s=/admin/upload/attachmentlayer/input_id_name/icons/path_type/picture/gettype/multiple.html" data-gettype="multiple" onclick="openAttachmentLayer(this);"><i class="fa fa-photo"></i> 选择多图</span>
+                                                    <input class="attach" type="hidden" id="icons" name="icons" value="{$icon},">
+                                            </div>
+                                                <div class="help-block col-md-8 fn" style="color:#E74C3C;padding-left: 20px;">帖子图片</div>    <div id="icons-gallery-box" class="uploader-list col-md-12 img-box gallery-box-bg">
+
+                                                {volist name="icon_path" id="i"}
+                                                <div class="col-md-3">
+                                                    <div class="thumbnail">
+                                                        <i class="fa fa-times-circle remove-attachment"></i>
+                                                        <img class="img" src="{$i['path']}" data-id="{$i['icon']}">
+                                                        <input type="hidden" name="icon_old" value="{$i['icon']}">
+                                                        <input type="hidden" name="icon_old_id" value="{$i['id']}">
+                                                    </div>
+                                                </div>
+                                                {/volist}
+                                                <!--<div class="col-md-3">
+                                                    <div class="thumbnail">
+                                                        <i class="fa fa-times-circle remove-attachment"></i>
+                                                        <img class="img" src="http://taiwan.59156.cn/static/uploads/2019-08-09/min8c13e2039929ec7cfdb11b9ecee9a1b8.jpg" data-id="359">
+                                                    </div>
+                                                </div>-->
+                                            </div>
+
+                                            </div>
+                                            <script>
+                                                $(function () {
+                                                    // 删除图片
+                                                    $('body').on('click', '#icons-gallery-box .remove-attachment', function() {
+                                                        var ready_for_remove_id = $(this).closest('.thumbnail').find('img').attr('data-id'); //获取待删除的图片ID
+                                                        if (!ready_for_remove_id) {
+                                                            updateAlert('错误', 'danger');
+                                                        }
+                                                        var current_picture_ids = $('#icons').val().split(","); //获取当前图集以逗号分隔的ID并转换成数组
+                                                        current_picture_ids.splice($.inArray(ready_for_remove_id,current_picture_ids),1); //从数组中删除待删除的图片ID
+                                                        $('#icons').val(current_picture_ids.join(',')) //删除后覆盖原input的值
+                                                        $(this).closest('.col-md-3').remove(); //删除图片预览图
+                                                    });
+
+                                                })
+                                            </script>
+                                        </div>
+                                        <div class="col-md-6 col-md-offset-2 hide help-block"><i class="fa fa-info-circle color-info1"></i> 帖子图片</div>
+                                    </div>
+
+
+                                    {/notempty}
+
+                                    <hr/>
+                                    <div class="form-group">
+                                        <div class="col-md-10 col-xs-offset-2 mt-10 tc">
+                                            <div class="col-md-3 col-xs-6">
+                                                <button class="btn btn-block btn-primary submit ajax-post " type="submit" target-form="form-builder">确定</button>
+                                            </div>
+                                            <div class="col-md-3 col-xs-6">
+                                                <button onclick="javascript:history.back(-1);return false;" class="btn btn-block btn-default return">返回</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </section>
+
+
+    <script type="text/javascript">
+        $(function() {
+            //给数组增加查找指定的元素索引方法
+            Array.prototype.indexOf = function(val) {
+                for (var i = 0; i < this.length; i++) {
+                    if (this[i] == val) return i;
+                }
+                return -1;
+            };
+
+            //给数组增加删除方法
+            Array.prototype.remove = function(val) {
+                var index = this.indexOf(val);
+                if (index > -1) {
+                    this.splice(index, 1);
+                }
+            };
+            //筛选框变化触发表单提交
+            $('[data-role="select_text"]').change(function(){
+                $('#selectForm').submit();
+            });
+        });
+        //筛选
+        $(document).on('submit', '.form-dont-clear-url-param', function(e){
+            e.preventDefault();
+
+            var seperator = "&";
+            var form = $(this).serialize();
+            var action = $(this).attr('action');
+            if(action == ''){
+                action = location.href;
+            }
+            var new_location = action +'?'+ seperator + form;
+            location.href = new_location;
+
+            return false;
+        });
+
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            //开始日期
+            var insStart = laydate.render({
+                elem: '#create_time'
+            });
+        });
+
+    </script>
+
+
+</div>
+<script type="text/javascript" src="/static/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/jquery.cookie.js"></script>
+
+<!-- Slimscroll -->
+<script src="/static/libs/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script type="text/javascript" src="/static/libs/fastclick/fastclick.min.js"></script>
+<script type="text/javascript" src="/static/admin/js/app.min.js" ></script>
+<!-- <script  type="text/javascript" src="/static/assets/js/jquery.nestable.js"></script> -->
+<script  type="text/javascript" src="/static/libs/nice-validator/jquery.validator.min.js?local=zh-CN"></script>
+<!-- <script type="text/javascript" src="/static/assets/js/think.js"></script> -->
+<script type="text/javascript" src="/static/libs/layer/layer.js"></script>
+
+<script type="text/javascript" src="/static/libs/iCheck/icheck.min.js"></script>
+
+<script type="text/javascript" src="/static/libs/toastr/toastr.min.js"></script>
+
+<script type="text/javascript" src="/static/admin/js/common.js?v=1.3.1" ></script>
+<script type="text/javascript" src="/static/admin/js/eacoo.js?v=1.3.1" ></script>
+<script type="text/javascript" src="/static/admin/js/base.js?v=1.3.1" ></script>
+
+<script type="text/javascript">
+    (function ($) {
+
+    })(jQuery);
+</script>
+
+</body>
+</html>

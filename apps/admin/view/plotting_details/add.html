@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>门展会后台管理</title>
+    <link type="text/css" rel="stylesheet" href="/static/assets/css/bootstrap.min.css"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/assets/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/AdminLTE.min.css" /><link rel="stylesheet" type="text/css" href="/static/admin/css/_all-skins.min.css" /><link rel="stylesheet" type="text/css" href="/static/assets/css/base.css" /><link rel="stylesheet" type="text/css" href="/static/libs/iCheck/all.css" /><link rel="stylesheet" type="text/css" href="/static/libs/toastr/toastr.min.css" />
+    <link type="text/css" href="/static/admin/css/style.css?v=1.3.1" rel="stylesheet" >
+    <script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+    <!-- <script type="text/javascript" src="/static/assets/js/jquery-3.2.1.min.js"></script> -->
+    <script type="text/javascript">
+        var EacooPHP = window.EacooPHP = {
+            "eacoophp_version":"1.3.1",
+            "url_model":1,//1重写模式，2兼容模式
+            "root":'',
+            "root_domain": "http://{$http_host}/admin.php", //当前网站地址
+            "static": "/static", //静态资源地址
+            "public": "/static/assets", //项目公共目录地址
+            "uploads_url" :'/uploads/',
+            "upload_driver":"local",
+            "cdn_domain":"http://{$http_host}",
+            "eacoo_api_url":"https://www.eacoophp.com",
+        }
+    </script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+
+
+<body class="hold-transition skin-blue" style="background-color:#ecf0f5;">
+<div class="iframe-wrapper">
+    <section class="content-header">
+        <!-- 面包屑导航 -->
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> <a href="/admin.php/admin/dashboard/index.html" class="opentab" tab-title='首页' data-iframe="true" tab-name="navtab-collapse-1">首页</a></a></li>
+            <li class="active">新增全景图 <span class="color-warning eacoo-menu-collect" data-title="编辑全景图" data-url="/admin.php/admin/plotting_details/edit/id/2.html" title="标记为收藏" style="cursor: pointer;font-size: 13px;"> <i class="fa fa-star-o"></i></span></li>
+            <div class="pull-right mr-10" style="margin-top: -10px;">
+                <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>
+            </div>
+        </ol>
+    </section>
+    <!--内容-->
+
+    <style type="text/css">
+        hr{margin-left: 20px;}
+        /* Builderform样式 */
+        .builder .form-horizontal .control-label{color: #333;}
+        label.checkbox-label{margin-bottom: 15px;}
+        .webuploader-pick{border: none!important;}
+
+        .help-block{font-size: 13px;line-height: 24px;font-weight: 500;color: #777;padding-left: 0;}
+        .help-block:hover{color: #555;}
+        .help-block i.fa{font-size: 15px;}
+
+        .citys_field{margin-bottom: 10px;}
+        .citys_field select{border-radius: 0;box-shadow: none;border-color: #d2d6de;height: 34px;padding: 6px 12px;font-size: 14px;line-height: 1.42857143;color: #555;background-color: #fff;background-image: none;border: 1px solid #ccc;border-radius: 4px;-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s}
+        /*上传个人图像*/
+        .upload-avatar-box{display: block;margin-top: 20px;width: 135px;height: 130px;line-height: 120px;}
+        .upload-avatar-box img{max-height: 120px;max-width: 125px;}
+        /*多图上传*/
+        .gallery-box-bg{background-color: #f0f0f0;padding: 10px 5px;margin-left:3%!important;}
+
+        .uploader-list .col-md-3{padding-left:5px;padding-right: 5px;}
+        .uploader-list .thumbnail{width: 100%;height: 135px;margin-bottom: 15px;}
+        .uploader-list .thumbnail img{max-width: 100%;height: 100%;}
+        /* Builderlist样式 */
+        #selectForm{display: inline;}
+        .builder-toolbar .form-group { margin-top: 0px; }
+        .icon-menu{top:33px;}
+
+        .builder_sub_title{font-size:13px;display: inline-block;border-radius:3px;color: #666;margin-top:10px;line-height: 26px;}
+        /*table*/
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{font-size: 13px;}
+    </style>
+
+    <section class="content pt-5">
+        <div class="box box-solid eacoo-box">
+            <!-- Tab导航 -->
+
+            <div class="box-body">
+                <div class="builder formbuilder-box">
+                    <div class="row">
+
+                        <div class="col-md-11" style="padding: 20px;margin-left:30px;border-radius:3px;">
+                            <form action="{:url('add')}" method="post" class="form-builder form-horizontal" data-validator-option="{theme:'bootstrap', timely:2, stopOnError:true}">
+                                <fieldset>
+
+                                    <div class="form-group item_category_id ">
+                                        <label for="category_id" class="col-md-2 control-label">类型</label>
+                                        <div class="col-md-4" >
+                                            <select name="category_id" id="category_id" class="form-control" >
+                                                <option value=''>请选择 类型</option>
+                                                {volist name="category" id="vo"}
+                                                <option value="{$vo['id']}">{$vo['title']}</option>
+                                                {/volist}
+                                               <!-- <option value="28" >风格</option>
+                                                <option value="29" >款式</option>-->
+                                            </select>                                        </div>
+                                        <div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> 类型</div>
+                                    </div>
+
+                                    <div class="form-group item_title ">
+                                        <label class="col-md-2 control-label">场景名称</label>
+                                        <div class="col-md-4" >
+                                            <input type="text" class="form-control" name="title" value="" require>                                        </div>
+                                        <div class="col-md-5 help-block"><i class="fa fa-info-circle color-info1"></i> 场景名称</div>
+                                    </div>
+
+                                    <input type="hidden" class="form-control" id="plotting_id" name="plotting_id" value="{$plotting_id}" >
+
+                                    <div class="form-group item_icon ">
+                                        <label for="icon" class="col-md-2 control-label">展绘全景</label>
+                                        <div class="col-md-6" style="padding-bottom: 5px;padding-left: 5px;">
+
+                                            <div class="controls" style="padding-bottom: 5px;padding-left: 5px;">
+
+                                                <input class="attach" type="hidden" id="icon" name="icon" value=""/>
+                                                <div>
+                                                    <span class="btn btn-info ml-10 mt-10 btn-sm" id="shangchuan"><i class="fa fa-file-image-o"></i> 选择图片</span>
+                                                </div>
+                                                <div class="upload-img-box tc popup-gallery fl img-thumbnail pr ">
+                                                    <div class="each each_img">
+                                                        <img src="/static/assets/img/noimage.gif" id="each_img">
+
+                                                       <!-- <i onclick="admin_image.removeImage($(this),'191')" class="fa fa-times-circle remove-attachment"></i>
+                                                        <a href="http://{$http_host}/uploads/picture/2019-10-17/5da7c2f103f51.png" title="点击查看大图">
+                                                            <img src="http://{$http_host}/uploads/picture/2019-10-17/5da7c2f103f51.png">
+                                                        </a>-->
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group item_icon ">
+                                        <label for="icon" class="col-md-2 control-label">展绘水印图</label>
+                                        <div class="col-md-6" style="padding-bottom: 5px;padding-left: 5px;">
+
+                                            <div class="controls" style="padding-bottom: 5px;padding-left: 5px;">
+
+                                                <input class="attach" type="hidden" id="watermark_icon" name="watermark_icon" value=""/>
+                                                <div>
+                                                    <span class="btn btn-info ml-10 mt-10 btn-sm" id="shangchuan2"><i class="fa fa-file-image-o"></i> 选择图片</span>
+                                                </div>
+                                                <div class="upload-img-box tc popup-gallery fl img-thumbnail pr ">
+                                                    <div class="each each_img2">
+                                                        <img src="/static/assets/img/noimage.gif" id="each_img2">
+
+                                                        <!-- <i onclick="admin_image.removeImage($(this),'191')" class="fa fa-times-circle remove-attachment"></i>
+                                                         <a href="http://{$http_host}/uploads/picture/2019-10-17/5da7c2f103f51.png" title="点击查看大图">
+                                                             <img src="http://{$http_host}/uploads/picture/2019-10-17/5da7c2f103f51.png">
+                                                         </a>-->
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group item_icon ">
+                                        <label for="icon" class="col-md-2 control-label">上传音乐</label>
+                                        <div class="col-md-6" style="padding-bottom: 5px;padding-left: 5px;">
+
+                                            <div class="controls" style="padding-bottom: 5px;padding-left: 5px;">
+
+
+                                                <div>
+                                                     <span id="web_uploader_wrapper_attachmentFile" class="btn btn-info btn-raised btn-sm">
+                     <i class="fa fa-cloud-upload"></i> 上传音乐
+                 </span>
+
+                                                    <input type="hidden" name="file_icon" value="" id="file_icon">
+                                                    <input type="hidden" name="file_icon_path" value="" id="file_icon_path">
+
+                                                    <a title="删除音乐" target-form="ids" class="btn btn-danger" onclick="void (0)" id="del"  style="display: none;">删除音乐</a>
+
+                                                </div>
+
+
+                                                <!--  <video src="" controls="controls" id="video" style="margin-top: 8px;display: none;"></video>-->
+
+                                                <div class="upload-img-box tc popup-gallery fl img-thumbnail pr ">
+                                                    <div class="each">
+
+                                                        <img src="/static/assets/img/noimage.gif" id="file_path">
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="help-block col-md-6 pl-10 fn">文件封面</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-md-offset-2 hide help-block"><i class="fa fa-info-circle color-info1"></i> 文件封面</div>
+                                    </div>
+
+
+
+
+
+                                    <div class="form-group item_status ">
+                                        <label for="status" class="col-md-2 control-label">状态</label>
+                                        <div class="col-md-4" >
+                                            <select name="status" id="status" class="form-control" >
+                                                <option value=''>请选择 状态</option>            <option value="0" >禁用</option>
+                                                <option value="1"  selected>正常</option>
+                                            </select>                                        </div>
+                                    </div>
+                                    <hr/>
+                                    <div class="form-group">
+                                        <div class="col-md-10 col-xs-offset-2 mt-10 tc">
+                                            <div class="col-md-3 col-xs-6">
+                                                <button class="btn btn-block btn-primary submit ajax-post " type="submit" target-form="form-builder" id="tijiao">确定</button>
+                                            </div>
+                                            <div class="col-md-3 col-xs-6">
+                                                <button onclick="javascript:history.back(-1);return false;" class="btn btn-block btn-default return">返回</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </section>
+    <script type="text/javascript" src="__PUBLIC__/js/bootstrap.min.js"></script>
+    <link href="__LIBS__/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="__LIBS__/webuploader/js/webuploader.min.js"></script>
+    <link href="__LIBS__/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
+    <script src="__LIBS__/daterangepicker/moment.min.js"></script>
+    <script src="__LIBS__/daterangepicker/daterangepicker.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            //上传文件
+            var upload_attachmentFile  = WebUploader.create({
+                // 选完文件后，是否自动上传。
+                auto: true,
+                // swf文件路径
+                swf: '/static/libs/webuploader/Uploader.swf',
+                // 文件接收服务端。
+                server: "/admin.php?s=/admin/upload/upload/path_type/file/type/file.html",
+                fileNumLimit: 10,
+                // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+                compress: false,
+                // 验证单个文件大小是否超出限制, 超出则不允许加入队列
+                fileSingleSizeLimit:7340032,
+                // 选择文件的按钮。可选。
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+                pick: {'id': "#web_uploader_wrapper_attachmentFile", 'multi': false},
+                accept:{title:'file',extensions:'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z,mp3,mp4,avi',mimeTypes:'file/*'}
+
+            });
+            // 当有文件添加进来的时候
+            upload_attachmentFile.on( 'fileQueued', function( file ) {
+                $("ul.attachment_list").prepend('<li class="col-sm-6 col-md-2 col-lg-2 mb-20" id="'+file.id+'"><div class="box-style oh" style="height:160px;"><div class="progress progress-striped active" style="display: block;margin-top:41%;"><div class="progress-bar" role="progressbar" style="width: 100%;"></div></div><div class="attachment-foot"><p class="state"></p></div></div></li>');
+            })
+            // 文件上传过程中创建进度条实时显示。
+            upload_attachmentFile.on( 'uploadProgress', function( file, percentage ) {
+                var $li = $( '#'+file.id ),
+                    $percent = $li.find('.progress .progress-bar');
+
+                // 避免重复创建
+                if ( !$percent.length ) {
+                    $percent = $('<div class="progress progress-striped active">' +
+                        '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                        '</div>' +
+                        '</div>').appendTo( $li ).find('.progress-bar');
+                }
+
+                $li.find('p.state').text('上传中');
+
+                $percent.css( 'width', percentage * 100 + '%' );
+            });
+            /*上传成功*/
+            upload_attachmentFile.on('uploadSuccess', function (file, result) {
+                if(result.code==1){
+                    var data = result.data;
+                    //$("#file_path").attr('src',data.src).show();
+                    $("#file_path").attr('src',data.src);
+                    // $("#video").show();
+                    $("#del").show();
+                    $("#file_icon").val(data.id);
+                    $("#file_icon_path").val(data.src);
+                    /* if (data.already==1) {
+                         $( '#'+file.id ).remove();
+                         $('#attachmentInfoModal').modal('show');
+                         updateAlert(result.msg,'success');
+                     } else{
+                         updateAlert(result.msg,'success');
+                         window.location.href="/admin.php/admin/attachment/index.html";
+                     }*/
+
+                } else {
+                    updateAlert(result.msg);
+                }
+            });
+            upload_attachmentFile.on( 'uploadError', function( file ) {
+                console.debug(file);
+            });
+
+        });
+
+        //删除文件
+        $("#del").click(function () {
+            //取得视频id
+            var id=$("#file_icon").val();
+
+            $.post("{:url('Attachment/setStatus')}",{"ids":[""+id+""],"status":"delete","model":"attachment"},function (data) {
+                if (data.code ==1){
+                    //删除成功
+                    layer.msg(data.msg);
+                    $("#del").hide();
+                    $("#file_icon").val(0);
+                    $("#file_icon_path").val(0);
+                    //  $("#video").hide();
+                }else {
+                    //删除失败
+                    layer.msg(data.msg);
+                }
+            })
+        })
+
+
+
+
+        $(function() {
+            //给数组增加查找指定的元素索引方法
+            Array.prototype.indexOf = function(val) {
+                for (var i = 0; i < this.length; i++) {
+                    if (this[i] == val) return i;
+                }
+                return -1;
+            };
+
+            //给数组增加删除方法
+            Array.prototype.remove = function(val) {
+                var index = this.indexOf(val);
+                if (index > -1) {
+                    this.splice(index, 1);
+                }
+            };
+            //筛选框变化触发表单提交
+            $('[data-role="select_text"]').change(function(){
+                $('#selectForm').submit();
+            });
+
+            //上传全景
+            var uploader_attachment= WebUploader.create({
+                // 选完文件后，是否自动上传。
+                auto: true,
+                duplicate: true,// 同一文件是否可以重复上传
+                // swf文件路径
+                swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
+                // 文件接收服务端。
+                server: "{:url('api/Uploads/upload3d')}",
+                //验证文件总数量, 超出则不允许加入队列
+                fileNumLimit: 5,
+                // 如果此选项为false, 则图片在上传前不进行压缩
+                compress: false,
+                // 验证单个文件大小是否超出限制, 超出则不允许加入队列
+                fileSingleSizeLimit:{php}echo 300*1024*1024;{/php},
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+                //选择文件的按钮
+                pick: '#shangchuan',
+                    // 只允许选择图片文件
+                    accept:{title:'Images',extensions:'{:config("attachment_options.image_exts")}',mimeTypes:'image/*'}
+            });
+            uploader_attachment.on('fileQueued', function (file) {
+                uploader_attachment.upload();
+            });
+            // 文件上传过程中创建进度条实时显示。
+            uploader_attachment.on( 'uploadProgress', function( file, percentage ) {
+                var $li = $('.each_img'),
+                    $percent = $li.find('.progress .progress-bar');
+
+                // 避免重复创建
+                if ( !$percent.length ) {
+                    $percent = $('<div class="progress progress-striped active">' +
+                        '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                        '</div>' +
+                        '</div>').appendTo( $li ).find('.progress-bar');
+
+                }
+                $li.find('p.state').text('上传中');
+
+
+                $percent.css( 'width', percentage * 100 + '%' );
+            });
+
+            /*上传成功**/
+            uploader_attachment.on('uploadSuccess', function (file, result) {
+                if (result.code==200) {
+
+                    $("#icon").val(result.icon);
+
+
+                    data = result.data;
+                    var append_string='<i onclick="admin_image.removeImage($(this),'+result.icon+')" class="fa fa-times-circle remove-attachment"></i>\n' +
+                        '                                                        <a href="http://{$http_host}'+result.path+'" title="点击查看大图">\n' +
+                        '                                                            <img src="http://{$http_host}'+result.path+'">\n' +
+                        '                                                        </a>';
+                    $(".each_img").html(append_string);
+
+                    uploader_attachment.reset();
+                } else {
+                    updateAlert(result.msg);
+                    setTimeout(function () {
+                        $(this).removeClass('disabled').prop('disabled', false);
+                    }, 1500);
+                }
+            });
+
+
+            //上传水印
+            var uploader_attachment2= WebUploader.create({
+                // 选完文件后，是否自动上传。
+                auto: true,
+                duplicate: true,// 同一文件是否可以重复上传
+                // swf文件路径
+                swf: '__PUBLIC__/libs/webuploader/Uploader.swf',
+                // 文件接收服务端。
+                server: "{:url('api/Uploads/upload3d')}",
+                //验证文件总数量, 超出则不允许加入队列
+                fileNumLimit: 5,
+                // 如果此选项为false, 则图片在上传前不进行压缩
+                compress: false,
+                // 验证单个文件大小是否超出限制, 超出则不允许加入队列
+                fileSingleSizeLimit:{php}echo 300*1024*1024;{/php},
+                // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+
+                //选择文件的按钮
+                pick: '#shangchuan2',
+                    // 只允许选择图片文件
+                    accept:{title:'Images',extensions:'{:config("attachment_options.image_exts")}',mimeTypes:'image/*'}
+            });
+            uploader_attachment2.on('fileQueued', function (file) {
+                uploader_attachment2.upload();
+            });
+            // 文件上传过程中创建进度条实时显示。
+            uploader_attachment2.on( 'uploadProgress', function( file, percentage ) {
+                var $li = $('.each_img2'),
+                    $percent = $li.find('.progress .progress-bar');
+
+                // 避免重复创建
+                if ( !$percent.length ) {
+                    $percent = $('<div class="progress progress-striped active">' +
+                        '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                        '</div>' +
+                        '</div>').appendTo( $li ).find('.progress-bar');
+
+                }
+                $li.find('p.state').text('上传中');
+
+
+                $percent.css( 'width', percentage * 100 + '%' );
+            });
+
+            /*上传成功**/
+            uploader_attachment2.on('uploadSuccess', function (file, result) {
+                if (result.code==200) {
+
+                    $("#watermark_icon").val(result.icon);
+
+
+                    data = result.data;
+                    var append_string2='<i onclick="admin_image.removeImage($(this),'+result.icon+')" class="fa fa-times-circle remove-attachment"></i>\n' +
+                        '                                                        <a href="http://{$http_host}'+result.path+'" title="点击查看大图">\n' +
+                        '                                                            <img src="http://{$http_host}'+result.path+'">\n' +
+                        '                                                        </a>';
+                    $(".each_img2").html(append_string2);
+
+                    uploader_attachment2.reset();
+                } else {
+                    updateAlert(result.msg);
+                    setTimeout(function () {
+                        $(this).removeClass('disabled').prop('disabled', false);
+                    }, 1500);
+                }
+            });
+
+
+/*
+
+            //提交
+            $("#tijiao").click(function () {
+                alert(1111);
+            })
+*/
+
+
+
+
+
+
+
+        });
+        //筛选
+        $(document).on('submit', '.form-dont-clear-url-param', function(e){
+            e.preventDefault();
+
+            var seperator = "&";
+            var form = $(this).serialize();
+            var action = $(this).attr('action');
+            if(action == ''){
+                action = location.href;
+            }
+            var new_location = action +'?'+ seperator + form;
+            location.href = new_location;
+
+            return false;
+        });
+    </script>
+
+
+</div>
+<script type="text/javascript" src="/static/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/jquery.cookie.js"></script>
+
+<!-- Slimscroll -->
+<script src="/static/libs/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script type="text/javascript" src="/static/libs/fastclick/fastclick.min.js"></script>
+<script type="text/javascript" src="/static/admin/js/app.min.js" ></script>
+<!-- <script  type="text/javascript" src="/static/assets/js/jquery.nestable.js"></script> -->
+<script  type="text/javascript" src="/static/libs/nice-validator/jquery.validator.min.js?local=zh-CN"></script>
+<!-- <script type="text/javascript" src="/static/assets/js/think.js"></script> -->
+<script type="text/javascript" src="/static/libs/layer/layer.js"></script>
+
+<script type="text/javascript" src="/static/libs/iCheck/icheck.min.js"></script>
+
+<script type="text/javascript" src="/static/libs/toastr/toastr.min.js"></script>
+
+<script type="text/javascript" src="/static/admin/js/common.js?v=1.3.1" ></script>
+<script type="text/javascript" src="/static/admin/js/eacoo.js?v=1.3.1" ></script>
+<script type="text/javascript" src="/static/admin/js/base.js?v=1.3.1" ></script>
+
+<script type="text/javascript">
+    (function ($) {
+
+    })(jQuery);
+</script>
+
+</body>
+</html>

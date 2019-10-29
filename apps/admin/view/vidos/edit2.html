@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>江北保安后台管理</title>
+    <link type="text/css" rel="stylesheet" href="/static/assets/css/bootstrap.min.css"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="/static/assets/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/AdminLTE.min.css" /><link rel="stylesheet" type="text/css" href="/static/admin/css/_all-skins.min.css" /><link rel="stylesheet" type="text/css" href="/static/assets/css/base.css" /><link rel="stylesheet" type="text/css" href="/static/libs/iCheck/all.css" /><link rel="stylesheet" type="text/css" href="/static/libs/toastr/toastr.min.css" />
+    <link type="text/css" href="/static/admin/css/style.css?v=1.3.1" rel="stylesheet" >
+    <script type="text/javascript" src="/static/assets/js/jquery-1.12.4.min.js"></script>
+    <!-- <script type="text/javascript" src="/static/assets/js/jquery-3.2.1.min.js"></script> -->
+    <script type="text/javascript">
+        var EacooPHP = window.EacooPHP = {
+            "eacoophp_version":"1.3.1",
+            "url_model":1,//1重写模式，2兼容模式
+            "root":'',
+            "root_domain": "http://127.0.0.1:8080/admin.php", //当前网站地址
+            "static": "/static", //静态资源地址
+            "public": "/static/assets", //项目公共目录地址
+            "uploads_url" :'/uploads/',
+            "upload_driver":"local",
+            "cdn_domain":"http://127.0.0.1:8080",
+            "eacoo_api_url":"https://www.eacoophp.com",
+        }
+    </script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<link href="/static/libs/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="/static/libs/daterangepicker/daterangepicker-bs3.css" type="text/css" rel="stylesheet">
+<style type="text/css">
+    .meta-ext{background-color: #55CCFF;color:#fff;font-size: 12px;font-weight:500;padding:0px 8px 2px;float: right;border-radius: 2px;}
+    .attachment-foot .file-name{white-space:nowrap;width:63%;padding-left: 3px;}
+    .attachment_meta_id{position: absolute;left:15px;bottom: 33px;font-size: 12px;color: #fff;}
+</style>
+
+<body class="hold-transition skin-blue" style="background-color:#ecf0f5;">
+<div class="iframe-wrapper">
+    <section class="content-header">
+        <!-- 面包屑导航 -->
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> <a href="/admin.php/admin/dashboard/index.html" class="opentab" tab-title='首页' data-iframe="true" tab-name="navtab-collapse-1">公司概况</a></a></li>
+            <li class="active">上传视频 <span class="color-warning eacoo-menu-collect" data-title="视频上传" data-url="/admin.php/admin/vidos/index.html" title="标记为收藏" style="cursor: pointer;font-size: 13px;"> <i class="fa fa-star-o"></i></span></li>
+            <div class="pull-right mr-10" style="margin-top: -10px;">
+                <button type="button" class="btn btn-box-tool f16" onclick="javascript:location.reload();"><i class="fa fa-refresh"></i></button>
+            </div>
+        </ol>
+    </section>
+    <!--内容-->
+
+
+    <section class="content pt-5">
+        <div class="box box-solid eacoo-box">
+
+            <div class="box-body">
+                <div class="attachment-wrap">
+
+                    <!--此页面主体内容-->
+                    <div class="row mt-10">
+
+                        <div class="col-xs-12 col-sm-12 button-list clearfix">
+                            <div class="col-xs-4 col-sm-4 form-group pr-0 pl-0">
+                 <span id="web_uploader_wrapper_attachmentIndex" class="btn btn-info btn-raised btn-sm">
+                     <i class="fa fa-cloud-upload"></i> 上传图片
+                 </span>
+                                <span id="web_uploader_wrapper_attachmentFile" class="btn btn-info btn-raised btn-sm">
+                     <i class="fa fa-cloud-upload"></i> 上传文件
+                 </span>
+
+                        </div>
+                            <!--高级工具-->
+                            <div class="col-xs-4 col-sm-4 mb-15 ml-15 text-right pull-right" id="more-method">
+                                <label class="checkbox-toggle color-6 mr-10"><input class="check-all" type="checkbox"> 全选</label>
+                                <a target-form="ids" class="btn btn-primary btn-sm" onclick="move()"><i class="fa fa-exchange"></i> 修改分类</a>&nbsp;<a title="批量删除" target-form="ids" class="btn btn-danger ajax-post confirm btn-sm" model="attachment" href="/admin.php/admin/attachment/setstatus/status/delete/model/attachment.html">批量删除</a>&nbsp;
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr/>
+                    <div class="row mt-20 ml0 mr0" id="attachment-content">
+
+                    </div>
+                    <!-- Modal Structure -->
+                </div>
+            </div>
+            <div class="modal fade mt100" id="moveModal">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                            <p class="modal-title">移动至</p>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/admin.php/admin/attachment/movecategory.html" method="post" class="form-move">
+                                <div class="form-group">
+                                    <select name="to_cid" class="form-control">
+                                        <option value="9" >人物</option>
+                                        <option value="10" >美食</option>
+                                        <option value="11" >图标素材</option>
+                                        <option value="12" >风景</option>
+                                        <option value="13" >其它</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" name="ids">
+                                    <input type="hidden" name="from_cid" value="0">
+                                    <button class="btn btn-primary btn-block submit ajax-post" type="submit" target-form="form-move">确 定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script id="attachment_tpl" type="text/html">
+        <ul class="attachment_list" >
+            <% for (var i = 0; i < data.length; i ++) { %>
+            <% var row = data[i]; %>
+            <li class="col-sm-6 col-md-2 col-lg-2 mb-20" data-id="{{@row.id}}" >
+                <div class="box-style">
+                    <div class="thumbnail">
+                        <div class="centered tc">
+                            <img src="{{@row.thumb_src}}" alt="" >
+                            <span class="attachment_meta_id fl">[{{@row.id}}]</span>
+                        </div>
+                    </div>
+                    <div class="attachment-foot">
+                        <span><input type="checkbox" class="ids" name="ids[]" value="{{@row.id}}"></span><span class="disline oh f13 color-5 file-name">{{@row.name}}</span><span class="meta-ext">{{@row.ext}}</span>
+                    </div>
+                </div>
+            </li>
+            <% } %>
+            <% if(data.length==0){ %>
+            <div class="tc no-found">
+                <p class="text-center">暂无结果</p>
+            </div>
+            <% } %>
+        </ul>
+        <% if(page_content){ %>
+        <div class="attachment-page-warp tc">
+            <ul class="pagination">
+                {{@page_content}}
+            </ul>
+        </div>
+        <% } %>
+    </script>
+
+
+</div>
+<script type="text/javascript" src="/static/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/assets/js/jquery.cookie.js"></script>
+
+<!-- Slimscroll -->
+<script src="/static/libs/slimscroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script type="text/javascript" src="/static/libs/fastclick/fastclick.min.js"></script>
+<script type="text/javascript" src="/static/admin/js/app.min.js" ></script>
+<!-- <script  type="text/javascript" src="/static/assets/js/jquery.nestable.js"></script> -->
+<script  type="text/javascript" src="/static/libs/nice-validator/jquery.validator.min.js?local=zh-CN"></script>
+<!-- <script type="text/javascript" src="/static/assets/js/think.js"></script> -->
+<script type="text/javascript" src="/static/libs/layer/layer.js"></script>
+
+<script type="text/javascript" src="/static/libs/iCheck/icheck.min.js"></script>
+
+<script type="text/javascript" src="/static/libs/toastr/toastr.min.js"></script>
+
+<script type="text/javascript" src="/static/admin/js/common.js?v=1.3.1" ></script>
+<script type="text/javascript" src="/static/admin/js/eacoo.js?v=1.3.1" ></script>
+<script type="text/javascript" src="/static/admin/js/base.js?v=1.3.1" ></script>
+
+<script type="text/javascript" src="/static/libs/artTemplate/template.js"></script>
+<script type="text/javascript" src="/static/libs/daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="/static/libs/daterangepicker/daterangepicker.js"></script>
+
+<script type="text/javascript" src="/static/libs/webuploader/js/webuploader.min.js"></script>
+<script type="text/javascript">
+    //Date range picker
+    $('#reservation').daterangepicker();
+    //Date range picker with time picker
+    $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
+    //Date range as a button
+    $('#choice_date_range').daterangepicker(
+        {
+            ranges: {
+                '今天': [moment(), moment()],
+                '昨天': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '最近7天': [moment().subtract(6, 'days'), moment()],
+                '最近30天': [moment().subtract(29,'days'), moment()],
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        },
+        function (start, end) {
+            $('#choice_date_range').val(start.format('YYYY/MM/DD') + '—' + end.format('YYYY/MM/DD'));
+        }
+    );
+    /*弹窗*/
+    $(function () {
+        var upload_attachmentIndex  = WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            // swf文件路径
+            swf: '/static/libs/webuploader/Uploader.swf',
+            // 文件接收服务端。
+            server: "/admin.php/admin/upload/upload/type/picture.html",
+            fileNumLimit: 10,
+            // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+            compress: false,
+            // 验证单个文件大小是否超出限制, 超出则不允许加入队列
+            fileSingleSizeLimit:2097152,
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {'id': "#web_uploader_wrapper_attachmentIndex", 'multi': false},
+            accept:{title:'Image',extensions:'gif,jpg,jpeg,bmp,png',mimeTypes:'image/*'}
+        });
+        // 当有文件添加进来的时候
+        upload_attachmentIndex.on( 'fileQueued', function( file ) {
+            $("ul.attachment_list").prepend('<li class="col-sm-6 col-md-2 col-lg-2 mb-20" id="'+file.id+'"><div class="box-style oh" style="height:160px;"><div class="progress progress-striped active" style="display: block;margin-top:41%;"><div class="progress-bar" role="progressbar" style="width: 100%;"></div></div><div class="attachment-foot"><p class="state"></p></div></div></li>');
+        })
+        // 文件上传过程中创建进度条实时显示。
+        upload_attachmentIndex.on( 'uploadProgress', function( file, percentage ) {
+            var $li = $( '#'+file.id ),
+                $percent = $li.find('.progress .progress-bar');
+
+            // 避免重复创建
+            if ( !$percent.length ) {
+                $percent = $('<div class="progress progress-striped active">' +
+                    '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                    '</div>' +
+                    '</div>').appendTo( $li ).find('.progress-bar');
+            }
+
+            $li.find('p.state').text('上传中');
+
+            $percent.css( 'width', percentage * 100 + '%' );
+        });
+        /*上传成功*/
+        upload_attachmentIndex.on('uploadSuccess', function (file, result) {
+            if(result.code==1){
+                var data = result.data;
+                if (data.already==1) {
+                    $( '#'+file.id ).remove();
+                    showAttachmentInfo(data.id);//存在同个文件直接显示附件信息
+                    $('#attachmentInfoModal').modal('show');
+                    updateAlert(result.msg,'success');
+                } else{
+                    updateAlert(result.msg,'success');
+                    window.location.href="/admin.php/admin/attachment/index.html";
+                }
+
+            } else {
+                updateAlert(result.msg);
+            }
+        });
+        upload_attachmentIndex.on( 'uploadError', function( file ) {
+            console.debug(file);
+        });
+
+        //上传文件
+        var upload_attachmentFile  = WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            // swf文件路径
+            swf: '/static/libs/webuploader/Uploader.swf',
+            // 文件接收服务端。
+            server: "/admin.php/admin/upload/upload/path_type/file/type/file.html",
+            fileNumLimit: 10,
+            // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+            compress: false,
+            // 验证单个文件大小是否超出限制, 超出则不允许加入队列
+            fileSingleSizeLimit:7340032,
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {'id': "#web_uploader_wrapper_attachmentFile", 'multi': false},
+            accept:{title:'file',extensions:'doc,docx,xls,xlsx,ppt,pptx,pdf,wps,txt,zip,rar,gz,bz2,7z,mp3,mp4,avi',mimeTypes:'file/*'}
+
+        });
+        // 当有文件添加进来的时候
+        upload_attachmentFile.on( 'fileQueued', function( file ) {
+            $("ul.attachment_list").prepend('<li class="col-sm-6 col-md-2 col-lg-2 mb-20" id="'+file.id+'"><div class="box-style oh" style="height:160px;"><div class="progress progress-striped active" style="display: block;margin-top:41%;"><div class="progress-bar" role="progressbar" style="width: 100%;"></div></div><div class="attachment-foot"><p class="state"></p></div></div></li>');
+        })
+        // 文件上传过程中创建进度条实时显示。
+        upload_attachmentFile.on( 'uploadProgress', function( file, percentage ) {
+            var $li = $( '#'+file.id ),
+                $percent = $li.find('.progress .progress-bar');
+
+            // 避免重复创建
+            if ( !$percent.length ) {
+                $percent = $('<div class="progress progress-striped active">' +
+                    '<div class="progress-bar" role="progressbar" style="width: 0%">' +
+                    '</div>' +
+                    '</div>').appendTo( $li ).find('.progress-bar');
+            }
+
+            $li.find('p.state').text('上传中');
+
+            $percent.css( 'width', percentage * 100 + '%' );
+        });
+        /*上传成功*/
+        upload_attachmentFile.on('uploadSuccess', function (file, result) {
+            if(result.code==1){
+                var data = result.data;
+                if (data.already==1) {
+                    $( '#'+file.id ).remove();
+                    showAttachmentInfo(data.id);//存在同个文件直接显示附件信息
+                    $('#attachmentInfoModal').modal('show');
+                    updateAlert(result.msg,'success');
+                } else{
+                    updateAlert(result.msg,'success');
+                    window.location.href="/admin.php/admin/attachment/index.html";
+                }
+
+            } else {
+                updateAlert(result.msg);
+            }
+        });
+        upload_attachmentFile.on( 'uploadError', function( file ) {
+            console.debug(file);
+        });
+
+        //模态框内容
+        $('body').on('click', '.attachment_list li', function(e){
+            var $this = $(this);
+            var attachmentId = $this.attr('data-id');
+            showAttachmentInfo(attachmentId);//显示附件信息
+        })
+
+        //筛选
+        $('body').on('click', '#search', function(e){
+            //e.preventDefault();
+            var seperator = "&";
+            var form =$("#search-form");
+            var form_data = form.serializeObject();
+            var action    = form.attr('action');
+            if(action == ''){
+                action = location.href;
+            }
+            var sep_prefix = '?';
+            if (EacooPHP.url_model==2) {
+                sep_prefix = '&';
+            }
+            loadAttachment(form_data)
+            return false;
+        });
+
+        /**
+         * 分页
+         * @param  {[type]} ) {    } [description]
+         * @return {[type]} [description]
+         * @date   2018-09-27
+         */
+        $(document).on('click','.attachment-page-warp ul li a', function(event) {
+            event.preventDefault();
+            var $this = $(this);
+            //切换Tab
+            $(".attachment-page-warp ul li").removeClass('active');
+            $this.parent().addClass('active');
+            var paged = $this.data('paged');
+            loadAttachment({paged:paged});
+        })
+
+    });
+
+    /**
+     * 更新模态框附件信息
+     * @param  {[type]} attachmentId [description]
+     * @date   2018-02-16
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    function showAttachmentInfo(attachmentId){
+        parent.layer.open({
+            type: 2,
+            title: '附件信息',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['620px','460px'],
+            content: url('admin/Attachment/info',['id='+attachmentId]),
+            btn: ['提交','关闭'],
+            yes: function(index, layero){
+                var p_layer = parent.layer;
+                var alt = p_layer.getChildFrame('#alt', index).val();
+                var term_id = p_layer.getChildFrame('#file-termid', index).val();
+                $.post(url("admin/Attachment/edit"),{id:attachmentId,alt:alt,term_id:term_id},function(result){
+                    if (result.code==1) {
+                        parent.updateAlert(result.msg,'success');
+                        p_layer.closeAll();
+                    } else{
+                        parent.updateAlert(result.msg,'success');
+
+                    }
+                });
+            }
+        });
+    }
+
+    //移动分类
+    function move(){
+        var ids = '';
+        $('input[name="ids[]"]:checked').each(function(){
+            ids += ',' + $(this).val();
+        });
+        if(ids != ''){
+            ids = ids.substr(1);
+            $('input[name="ids"]').val(ids);
+            $('.modal-title').html('移动选中的的附件至：');
+            $('#moveModal').modal('show', 'fit')
+        }else{
+            updateAlert('请选择需要移动的附件', 'warning');
+        }
+    }
+
+    /**
+     * 加载附件列表
+     * @param  {[type]} action_url 请求地址
+     * @return {[type]} [description]
+     * @date   2018-03-09
+     * @author 心云间、凝听 <981248356@qq.com>
+     */
+    function loadAttachment(params) {
+        var defaults = {
+            action_url: url('admin/attachment/index'),
+            paged: 1,
+        };
+        params = $.extend(defaults, params);
+        var action_url = params.action_url;
+        $.get(action_url, params, function (result) {
+            var attachment_list = template('attachment_tpl', result);
+            $('#attachment-content').html(attachment_list);
+        })
+    }
+
+    loadAttachment();
+
+    $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [ o[this.name] ];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    }
+</script>
+
+
+</body>
+</html>
